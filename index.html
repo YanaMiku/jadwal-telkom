@@ -33,6 +33,10 @@
         .table-scroll::-webkit-scrollbar-thumb:hover {
             background: #64748b; 
         }
+        /* Warna status di tabel */
+        .status-w { background-color: #22c55e !important; color: #000 !important; font-weight: 700; }
+        .status-p { background-color: #3b82f6 !important; color: #fff !important; font-weight: 700; }
+        .status-l { background-color: #ef4444 !important; color: #fff !important; font-weight: 700; }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen p-2 md:p-6 selection:bg-blue-500/30">
@@ -42,7 +46,16 @@
             <h1 class="text-2xl md:text-3xl font-bold text-white tracking-tight">Jadwal Shift Terpadu</h1>
             <p class="text-xs md:text-sm text-slate-400 flex items-center justify-center gap-2">
                 <i class="ph ph-clock-counter-clockwise"></i>
-                Warehouse (5 Minggu) & Lapangan (Jadwal Tetap / 5 Hari Kerja)
+                Group 1: 5 Hari Lapangan + 2 Hari Libur + Warehouse Shift
+            </p>
+            <p class="text-xs text-slate-500 flex items-center justify-center gap-1 flex-wrap">
+                <span class="inline-block w-3 h-3 rounded bg-green-500"></span> W = Warehouse
+                <span class="inline-block w-3 h-3 rounded bg-blue-500 ml-2"></span> P = Lapangan
+                <span class="inline-block w-3 h-3 rounded bg-red-500 ml-2"></span> L = Libur
+                <span class="text-slate-600 ml-2">|</span>
+                <span class="text-emerald-400">Group 1</span> (No 1-5)
+                <span class="text-purple-400 ml-2">Group 2</span> (No 6-10)
+                <span class="text-yellow-400 ml-2">Group 3</span> (No 11-12)
             </p>
         </div>
 
@@ -85,44 +98,57 @@
                 <p id="cycleDisplay" class="text-[9px] md:text-sm text-slate-400 mb-3 md:mb-4 font-mono bg-slate-800 inline-block px-2 py-1 rounded-md self-start"></p>
 
                 <div class="space-y-3 md:space-y-4 flex-grow overflow-y-auto pr-1">
-                    <!-- Tim 1 -->
-                    <div class="bg-slate-800/50 p-2 md:p-4 rounded-lg md:rounded-xl border border-slate-700">
+                    <!-- Group 1 (Warehouse & Lapangan) -->
+                    <div class="bg-slate-800/50 p-2 md:p-4 rounded-lg md:rounded-xl border border-emerald-500/30">
                         <h3 class="font-semibold text-emerald-400 mb-2 border-b border-slate-700 pb-1 md:pb-2 flex items-center gap-1 md:gap-2 text-xs md:text-base">
-                            <i class="ph ph-warehouse"></i> Grup 1
+                            <i class="ph ph-warehouse"></i> Group 1 (No 1-5)
                         </h3>
-                        <div class="grid grid-cols-1 gap-2 text-[10px] md:text-sm">
+                        <div class="grid grid-cols-3 gap-1 text-[10px] md:text-sm">
                             <div>
-                                <span class="block text-slate-400 text-[9px] md:text-xs uppercase tracking-wider flex items-center gap-1">
-                                    <i class="ph ph-package"></i> Warehouse
-                                </span>
-                                <div id="w_warehouse" class="font-medium text-white mt-0.5"></div>
+                                <span class="block text-green-400 text-[9px] md:text-xs uppercase tracking-wider">W</span>
+                                <div id="g1_w" class="font-medium text-white mt-0.5 text-xs md:text-sm"></div>
                             </div>
                             <div>
-                                <span class="block text-slate-400 text-[9px] md:text-xs uppercase tracking-wider flex items-center gap-1">
-                                    <i class="ph ph-map-pin"></i> Lapangan
-                                </span>
-                                <div id="w_lapangan" class="font-medium mt-0.5"></div>
+                                <span class="block text-blue-400 text-[9px] md:text-xs uppercase tracking-wider">P</span>
+                                <div id="g1_p" class="font-medium text-white mt-0.5 text-xs md:text-sm"></div>
+                            </div>
+                            <div>
+                                <span class="block text-red-400 text-[9px] md:text-xs uppercase tracking-wider">L</span>
+                                <div id="g1_l" class="font-medium text-red-400 mt-0.5 text-xs md:text-sm"></div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tim 2 -->
-                    <div class="bg-slate-800/50 p-2 md:p-4 rounded-lg md:rounded-xl border border-slate-700">
+                    <!-- Group 2 (Lapangan Tetap) -->
+                    <div class="bg-slate-800/50 p-2 md:p-4 rounded-lg md:rounded-xl border border-purple-500/30">
                         <h3 class="font-semibold text-purple-400 mb-2 border-b border-slate-700 pb-1 md:pb-2 flex items-center gap-1 md:gap-2 text-xs md:text-base">
-                            <i class="ph ph-users-three"></i> Grup 2
+                            <i class="ph ph-users-three"></i> Group 2 (No 6-10)
                         </h3>
-                        <div class="grid grid-cols-1 gap-2 text-[10px] md:text-sm">
+                        <div class="grid grid-cols-2 gap-1 text-[10px] md:text-sm">
                             <div>
-                                <span class="block text-slate-400 text-[9px] md:text-xs uppercase tracking-wider flex items-center gap-1">
-                                    <i class="ph ph-briefcase"></i> Hadir
-                                </span>
-                                <div id="l_hadir" class="font-medium text-white mt-0.5 truncate"></div>
+                                <span class="block text-blue-400 text-[9px] md:text-xs uppercase tracking-wider">P (Hadir)</span>
+                                <div id="g2_hadir" class="font-medium text-white mt-0.5 text-xs md:text-sm truncate"></div>
                             </div>
                             <div>
-                                <span class="block text-slate-400 text-[9px] md:text-xs uppercase tracking-wider flex items-center gap-1 text-red-400/80">
-                                    <i class="ph ph-bed"></i> Libur
-                                </span>
-                                <div id="l_libur" class="font-medium text-red-400 mt-0.5 truncate"></div>
+                                <span class="block text-red-400 text-[9px] md:text-xs uppercase tracking-wider">L (Libur)</span>
+                                <div id="g2_libur" class="font-medium text-red-400 mt-0.5 text-xs md:text-sm truncate"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 3 (Lapangan Tetap) -->
+                    <div class="bg-slate-800/50 p-2 md:p-4 rounded-lg md:rounded-xl border border-yellow-500/30">
+                        <h3 class="font-semibold text-yellow-400 mb-2 border-b border-slate-700 pb-1 md:pb-2 flex items-center gap-1 md:gap-2 text-xs md:text-base">
+                            <i class="ph ph-users"></i> Group 3 (No 11-12)
+                        </h3>
+                        <div class="grid grid-cols-2 gap-1 text-[10px] md:text-sm">
+                            <div>
+                                <span class="block text-blue-400 text-[9px] md:text-xs uppercase tracking-wider">P (Hadir)</span>
+                                <div id="g3_hadir" class="font-medium text-white mt-0.5 text-xs md:text-sm truncate"></div>
+                            </div>
+                            <div>
+                                <span class="block text-red-400 text-[9px] md:text-xs uppercase tracking-wider">L (Libur)</span>
+                                <div id="g3_libur" class="font-medium text-red-400 mt-0.5 text-xs md:text-sm truncate"></div>
                             </div>
                         </div>
                     </div>
@@ -147,47 +173,74 @@
     </div>
 
     <script>
-        // --- DATA SIKLUS 5 MINGGU (Grup 1) ---
-        const schedule5Weeks = [
-            { weekday: { w: "Gilang & Zhafran", l: "Ilham, Wisnu & Ali" }, weekend: { w: "Gilang & Ilham", l: "Wisnu, Ali & Zhafran" } },
-            { weekday: { w: "Gilang & Ilham", l: "Wisnu, Ali & Zhafran" }, weekend: { w: "Ilham & Wisnu", l: "Gilang, Ali & Zhafran" } },
-            { weekday: { w: "Ilham & Wisnu", l: "Gilang, Ali & Zhafran" }, weekend: { w: "Wisnu & Ali", l: "Gilang, Ilham & Zhafran" } },
-            { weekday: { w: "Wisnu & Ali", l: "Gilang, Ilham & Zhafran" }, weekend: { w: "Ali & Zhafran", l: "Gilang, Ilham & Wisnu" } },
-            { weekday: { w: "Ali & Zhafran", l: "Gilang, Ilham & Wisnu" }, weekend: { w: "Zhafran & Gilang", l: "Ilham, Wisnu & Ali" } }
+        // ============================================================
+        // DATA JADWAL GROUP 1: 5 Hari Lapangan + 2 Hari Libur + Warehouse
+        // Setiap orang di Group 1:
+        //   - 5 hari kerja (Lapangan) + 2 hari libur
+        //   - Di hari Sabtu-Minggu, 2 orang bertugas Warehouse (shift bergilir)
+        //   - Yang tidak Warehouse di weekend tetap libur
+        // 
+        // Pasangan Warehouse:
+        //   Minggu 1: Wisnu & Ali
+        //   Minggu 2: Gilang & Ilham
+        //   Minggu 3: Ali & Zhafran
+        //   Minggu 4: Gilang & Ilham (repeat)
+        // ============================================================
+
+        // --- DATA SIKLUS 4 MINGGU (Group 1) ---
+        const schedule4Weeks = [
+            { // Minggu 1: W = Wisnu & Ali
+                weekend_w: ["Wisnu", "Ali"]
+            },
+            { // Minggu 2: W = Gilang & Ilham
+                weekend_w: ["Gilang", "Ilham"]
+            },
+            { // Minggu 3: W = Ali & Zhafran
+                weekend_w: ["Ali", "Zhafran"]
+            },
+            { // Minggu 4: W = Gilang & Ilham
+                weekend_w: ["Gilang", "Ilham"]
+            }
         ];
 
-        // --- DATA SIKLUS LAPANGAN GRUP 2 (Diperbarui) ---
+        // --- DATA GROUP 2 (No 6-10) ---
         // RISKA & ELISAH libur bersama (Senin & Selasa)
         // ALYA & JELITA libur bersama (Rabu & Kamis)
-        // AZZAM & FIAN libur setiap Sabtu & Minggu
         // IMEL libur Selasa & Rabu
-        const group2Fixed = {
+        const group2Data = {
             RISKA: [1,2],   // Senin & Selasa
-            ELISAH: [1,2],  // Senin & Selasa (Bareng Riska)
+            ELISAH: [1,2],  // Senin & Selasa
             ALYA: [3,4],    // Rabu & Kamis
-            JELITA: [3,4],  // Rabu & Kamis (Bareng Alya)
-            IMEL: [2,3],    // Selasa & Rabu
+            JELITA: [3,4],  // Rabu & Kamis
+            IMEL: [2,3]     // Selasa & Rabu
+        };
+
+        // --- DATA GROUP 3 (No 11-12) ---
+        // AZZAM & FIAN libur setiap Sabtu & Minggu
+        const group3Data = {
             AZZAM: [6,0],   // Sabtu & Minggu
             FIAN: [6,0]     // Sabtu & Minggu
         };
 
-        const schedule7Weeks = Array(7).fill(group2Fixed);
-
         const fullNames = [
+            // Group 1 (No 1-5)
             { id: "Ilham", full: "MUKHAMMAD ILHAM MAULANA", group: 1 },
             { id: "Zhafran", full: "ZHAFRAN RAMADHAN", group: 1 },
             { id: "Wisnu", full: "MUHAMMAD WISNU", group: 1 },
             { id: "Ali", full: "MUHAMMAD ALI YUSRON", group: 1 },
             { id: "Gilang", full: "FAWWAZ GILANG PRADANA", group: 1 },
+            // Group 2 (No 6-10)
             { id: "RISKA", full: "RISKA ANGRAENI PUTRI", group: 2 },
             { id: "ELISAH", full: "ELISAH", group: 2 },
             { id: "ALYA", full: "ALYA RAHMAWATI", group: 2 },
             { id: "JELITA", full: "JELITA PERMATA", group: 2 },
             { id: "IMEL", full: "IMEL FITRI CAHYANI", group: 2 },
-            { id: "AZZAM", full: "MUHAMAD AZZAM APRILADI", group: 2 },
-            { id: "FIAN", full: "MUHAMAD ALIFIAN RAMADHAN", group: 2 }
+            // Group 3 (No 11-12)
+            { id: "AZZAM", full: "MUHAMAD AZZAM APRILADI", group: 3 },
+            { id: "FIAN", full: "MUHAMAD ALIFIAN RAMADHAN", group: 3 }
         ];
 
+        // Anchor date: Minggu, 13 Juli 2026 (hari Minggu)
         const anchorDate = new Date(2026, 6, 13); 
         let currentDate = new Date(); 
         let currentMonth = currentDate.getMonth();
@@ -210,7 +263,46 @@
             const anchorMonday = getMonday(anchorDate);
             const diffTime = targetMonday.getTime() - anchorMonday.getTime();
             const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
-            return { index5: ((diffWeeks % 5) + 5) % 5, index7: ((diffWeeks % 7) + 7) % 7 };
+            return { index4: ((diffWeeks % 4) + 4) % 4 };
+        }
+
+        // --- Fungsi untuk mendapatkan status seseorang pada tanggal tertentu ---
+        function getStatus(personId, date) {
+            const dayOfWeek = date.getDay();
+            const cycles = calculateCycles(date);
+            
+            const person = fullNames.find(p => p.id === personId);
+            if (!person) return 'L';
+
+            if (person.group === 1) {
+                const weekData = schedule4Weeks[cycles.index4];
+                const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+                
+                if (isWeekend) {
+                    // Sabtu-Minggu: yang di Warehouse, sisanya libur
+                    if (weekData.weekend_w.includes(personId)) {
+                        return 'W';
+                    } else {
+                        return 'L';
+                    }
+                } else {
+                    // Senin-Jumat: semua Group 1 kerja Lapangan
+                    return 'P';
+                }
+            } else if (person.group === 2) {
+                const liburDays = group2Data[personId];
+                if (liburDays && liburDays.includes(dayOfWeek)) {
+                    return 'L';
+                }
+                return 'P';
+            } else if (person.group === 3) {
+                const liburDays = group3Data[personId];
+                if (liburDays && liburDays.includes(dayOfWeek)) {
+                    return 'L';
+                }
+                return 'P';
+            }
+            return 'L';
         }
 
         function updateScheduleDetail(date) {
@@ -219,28 +311,51 @@
             const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
             
             document.getElementById('selectedDateDisplay').textContent = `${dayNames[dayOfWeek]}, ${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
-            document.getElementById('cycleDisplay').innerHTML = `G1: <span class="text-emerald-400 font-bold">W${cycles.index5 + 1}</span> | G2: <span class="text-purple-400 font-bold">Tetap (Fixed)</span>`;
+            document.getElementById('cycleDisplay').innerHTML = `Group 1: <span class="text-emerald-400 font-bold">M${cycles.index4 + 1}</span> | Group 2 & 3: <span class="text-purple-400 font-bold">Tetap</span>`;
 
-            const dataG1 = isWeekend ? schedule5Weeks[cycles.index5].weekend : schedule5Weeks[cycles.index5].weekday;
-            document.getElementById('w_warehouse').textContent = dataG1.w;
-            document.getElementById('w_lapangan').textContent = dataG1.l;
-            document.getElementById('w_lapangan').className = isWeekend ? "font-medium mt-0.5 text-red-400" : "font-medium mt-0.5 text-white";
-
-            const liburList = [], hadirList = [];
-            const g2Data = schedule7Weeks[cycles.index7];
+            // === GROUP 1 ===
+            const weekData = schedule4Weeks[cycles.index4];
+            let wList = [], pList = [], lList = [];
             
-            // Urutan nama untuk tampilan yang rapi (sesuai urutan di fullNames)
-            const group2Order = ["RISKA", "ELISAH", "ALYA", "JELITA", "IMEL", "AZZAM", "FIAN"];
-            for (const name of group2Order) {
-                if (g2Data[name] && g2Data[name].includes(dayOfWeek)) {
-                    liburList.push(name);
-                } else {
-                    hadirList.push(name);
-                }
+            const allG1 = ["Ilham", "Zhafran", "Wisnu", "Ali", "Gilang"];
+            
+            if (isWeekend) {
+                wList = weekData.weekend_w;
+                lList = allG1.filter(name => !weekData.weekend_w.includes(name));
+            } else {
+                // Senin-Jumat: semua Group 1 Lapangan
+                pList = allG1;
             }
             
-            document.getElementById('l_hadir').innerHTML = hadirList.join(', ');
-            document.getElementById('l_libur').innerHTML = liburList.join(', ') || '-';
+            document.getElementById('g1_w').textContent = wList.join(', ') || '-';
+            document.getElementById('g1_p').textContent = pList.join(', ') || '-';
+            document.getElementById('g1_l').textContent = lList.join(', ') || '-';
+
+            // === GROUP 2 ===
+            const g2Hadir = [], g2Libur = [];
+            const g2Order = ["RISKA", "ELISAH", "ALYA", "JELITA", "IMEL"];
+            for (const name of g2Order) {
+                if (group2Data[name].includes(dayOfWeek)) {
+                    g2Libur.push(name);
+                } else {
+                    g2Hadir.push(name);
+                }
+            }
+            document.getElementById('g2_hadir').textContent = g2Hadir.join(', ') || '-';
+            document.getElementById('g2_libur').textContent = g2Libur.join(', ') || '-';
+
+            // === GROUP 3 ===
+            const g3Hadir = [], g3Libur = [];
+            const g3Order = ["AZZAM", "FIAN"];
+            for (const name of g3Order) {
+                if (group3Data[name].includes(dayOfWeek)) {
+                    g3Libur.push(name);
+                } else {
+                    g3Hadir.push(name);
+                }
+            }
+            document.getElementById('g3_hadir').textContent = g3Hadir.join(', ') || '-';
+            document.getElementById('g3_libur').textContent = g3Libur.join(', ') || '-';
         }
 
         function renderTable(month, year) {
@@ -254,6 +369,7 @@
             html += `<thead class="bg-yellow-400 font-bold uppercase"><tr>`;
             html += `<th rowspan="2" class="border border-black px-2 md:px-3 py-1">NO</th>`;
             html += `<th rowspan="2" class="border border-black px-3 md:px-6 py-1">NAMA</th>`;
+            html += `<th rowspan="2" class="border border-black px-2 md:px-3 py-1 text-xs">GRUP</th>`;
             for (let i = 1; i <= daysInMonth; i++) {
                 const dayOfWeek = new Date(year, month, i).getDay();
                 html += `<th class="border border-black px-1 md:px-2 py-1 text-[10px] md:text-xs tracking-tighter">${tblDayNames[dayOfWeek]}</th>`;
@@ -269,32 +385,25 @@
 
             // Isi Data
             fullNames.forEach((person, index) => {
+                const groupLabel = person.group === 1 ? 'G1' : person.group === 2 ? 'G2' : 'G3';
+                const groupColor = person.group === 1 ? 'text-emerald-600' : person.group === 2 ? 'text-purple-600' : 'text-yellow-600';
+                
                 html += `<tr class="hover:bg-slate-200 transition-colors">`;
                 html += `<td class="border border-black text-center font-bold px-2 py-1.5">${index + 1}</td>`;
                 html += `<td class="border border-black px-3 py-1.5 whitespace-nowrap text-xs">${person.full}</td>`;
+                html += `<td class="border border-black text-center font-bold px-2 py-1.5 ${groupColor}">${groupLabel}</td>`;
 
                 for (let d = 1; d <= daysInMonth; d++) {
                     const checkDate = new Date(year, month, d);
-                    const dayOfWeek = checkDate.getDay();
-                    const cycles = calculateCycles(checkDate);
-                    let status = 'M';
-
-                    if (person.group === 1) {
-                        const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
-                        if (isWeekend) {
-                            const liburString = schedule5Weeks[cycles.index5].weekend.l;
-                            if (liburString.includes(person.id)) status = 'L';
-                        }
-                    } else if (person.group === 2) {
-                        const liburDays = schedule7Weeks[cycles.index7][person.id];
-                        if (liburDays.includes(dayOfWeek)) status = 'L';
-                    }
-
-                    if (status === 'M') {
-                        html += `<td class="border border-black bg-[#86efac] text-black text-center font-bold px-1 py-1">M</td>`;
-                    } else {
-                        html += `<td class="border border-black bg-[#ef4444] text-white text-center font-bold px-1 py-1">L</td>`;
-                    }
+                    const status = getStatus(person.id, checkDate);
+                    
+                    let statusClass = '';
+                    let label = status;
+                    if (status === 'W') statusClass = 'status-w';
+                    else if (status === 'P') statusClass = 'status-p';
+                    else if (status === 'L') statusClass = 'status-l';
+                    
+                    html += `<td class="border border-black text-center font-bold px-1 py-1 ${statusClass}">${label}</td>`;
                 }
                 html += `</tr>`;
             });
