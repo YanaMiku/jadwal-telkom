@@ -94,7 +94,7 @@
                 <p id="cycleDisplay" class="text-[9px] md:text-sm text-slate-400 mb-3 md:mb-4 font-mono bg-slate-800 inline-block px-2 py-1 rounded-md self-start"></p>
 
                 <div class="space-y-3 md:space-y-4 flex-grow overflow-y-auto pr-1">
-                    <!-- Group 1 (Warehouse & Lapangan) -->
+                    <!-- Warehouse & Lapangan -->
                     <div class="bg-slate-800/50 p-2 md:p-4 rounded-lg md:rounded-xl border border-emerald-500/30">
                         <h3 class="font-semibold text-emerald-400 mb-2 border-b border-slate-700 pb-1 md:pb-2 flex items-center gap-1 md:gap-2 text-xs md:text-base">
                             <i class="ph ph-warehouse"></i> Warehouse & Lapangan
@@ -115,7 +115,7 @@
                         </div>
                     </div>
 
-                    <!-- Group 2 (Lapangan Tetap) -->
+                    <!-- Lapangan Tetap 1 -->
                     <div class="bg-slate-800/50 p-2 md:p-4 rounded-lg md:rounded-xl border border-purple-500/30">
                         <h3 class="font-semibold text-purple-400 mb-2 border-b border-slate-700 pb-1 md:pb-2 flex items-center gap-1 md:gap-2 text-xs md:text-base">
                             <i class="ph ph-users-three"></i> Lapangan Tetap 1
@@ -132,7 +132,7 @@
                         </div>
                     </div>
 
-                    <!-- Group 3 (Lapangan Tetap) -->
+                    <!-- Lapangan Tetap 2 -->
                     <div class="bg-slate-800/50 p-2 md:p-4 rounded-lg md:rounded-xl border border-yellow-500/30">
                         <h3 class="font-semibold text-yellow-400 mb-2 border-b border-slate-700 pb-1 md:pb-2 flex items-center gap-1 md:gap-2 text-xs md:text-base">
                             <i class="ph ph-users"></i> Lapangan Tetap 2
@@ -170,20 +170,34 @@
 
     <script>
         // ============================================================
-        // DATA JADWAL: 5 Hari Lapangan + 2 Hari Libur + Warehouse
+        // JADWAL: Senin-Jumat ada Warehouse (2 orang) + Lapangan (3 orang)
+        //         Sabtu-Minggu ada Warehouse (2 orang) + Libur (3 orang)
+        // 
         // Pasangan Warehouse:
-        //   Minggu 1: Wisnu & Ali
-        //   Minggu 2: Gilang & Ilham
-        //   Minggu 3: Ali & Zhafran
-        //   Minggu 4: Gilang & Ilham (repeat)
+        //   Minggu 1: Gilang - Ilham (Senin-Jumat) & Wisnu - Ali (Sabtu-Minggu)
+        //   Minggu 2: Ali - Zhafran (Senin-Jumat) & Gilang - Ilham (Sabtu-Minggu)
+        //   Minggu 3: Wisnu - Gilang (Senin-Jumat) & Ali - Zhafran (Sabtu-Minggu)
+        //   Minggu 4: Wisnu - Ali (Senin-Jumat) & Gilang - Ilham (Sabtu-Minggu)
         // ============================================================
 
-        // --- DATA SIKLUS 4 MINGGU (Warehouse) ---
+        // --- DATA SIKLUS 4 MINGGU ---
         const schedule4Weeks = [
-            { weekend_w: ["Wisnu", "Ali"] },
-            { weekend_w: ["Gilang", "Ilham"] },
-            { weekend_w: ["Ali", "Zhafran"] },
-            { weekend_w: ["Gilang", "Ilham"] }
+            { // Minggu 1
+                weekday_w: ["Gilang", "Ilham"],
+                weekend_w: ["Wisnu", "Ali"]
+            },
+            { // Minggu 2
+                weekday_w: ["Ali", "Zhafran"],
+                weekend_w: ["Gilang", "Ilham"]
+            },
+            { // Minggu 3
+                weekday_w: ["Wisnu", "Gilang"],
+                weekend_w: ["Ali", "Zhafran"]
+            },
+            { // Minggu 4
+                weekday_w: ["Wisnu", "Ali"],
+                weekend_w: ["Gilang", "Ilham"]
+            }
         ];
 
         // --- DATA LAPANGAN TETAP 1 ---
@@ -202,7 +216,7 @@
         };
 
         const fullNames = [
-            // Warehouse & Lapangan (5 orang)
+            // 5 orang pertama (Warehouse & Lapangan)
             { id: "Ilham", full: "MUKHAMMAD ILHAM MAULANA" },
             { id: "Zhafran", full: "ZHAFRAN RAMADHAN" },
             { id: "Wisnu", full: "MUHAMMAD WISNU" },
@@ -249,7 +263,6 @@
             const dayOfWeek = date.getDay();
             const cycles = calculateCycles(date);
             
-            // Cek apakah person termasuk 5 orang pertama (Warehouse & Lapangan)
             const firstFive = ["Ilham", "Zhafran", "Wisnu", "Ali", "Gilang"];
             const group2Names = ["RISKA", "ELISAH", "ALYA", "JELITA", "IMEL"];
             const group3Names = ["AZZAM", "FIAN"];
@@ -265,7 +278,12 @@
                         return 'L';
                     }
                 } else {
-                    return 'P';
+                    // Senin-Jumat
+                    if (weekData.weekday_w.includes(personId)) {
+                        return 'W';
+                    } else {
+                        return 'P';
+                    }
                 }
             } else if (group2Names.includes(personId)) {
                 const liburDays = group2Data[personId];
@@ -291,7 +309,7 @@
             document.getElementById('selectedDateDisplay').textContent = `${dayNames[dayOfWeek]}, ${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
             document.getElementById('cycleDisplay').innerHTML = `Minggu: <span class="text-emerald-400 font-bold">${cycles.index4 + 1}</span>`;
 
-            // === Warehouse & Lapangan (5 orang) ===
+            // === 5 orang pertama ===
             const weekData = schedule4Weeks[cycles.index4];
             const firstFive = ["Ilham", "Zhafran", "Wisnu", "Ali", "Gilang"];
             let wList = [], pList = [], lList = [];
@@ -300,7 +318,8 @@
                 wList = weekData.weekend_w;
                 lList = firstFive.filter(name => !weekData.weekend_w.includes(name));
             } else {
-                pList = firstFive;
+                wList = weekData.weekday_w;
+                pList = firstFive.filter(name => !weekData.weekday_w.includes(name));
             }
             
             document.getElementById('g1_w').textContent = wList.join(', ') || '-';
@@ -341,7 +360,7 @@
 
             let html = `<table class="min-w-max border-collapse border-2 border-black text-xs md:text-sm text-black bg-white shadow-md">`;
             
-            // Header Row 1 (HARI)
+            // Header
             html += `<thead class="bg-yellow-400 font-bold uppercase"><tr>`;
             html += `<th rowspan="2" class="border border-black px-2 md:px-3 py-1">NO</th>`;
             html += `<th rowspan="2" class="border border-black px-3 md:px-6 py-1">NAMA</th>`;
@@ -349,16 +368,12 @@
                 const dayOfWeek = new Date(year, month, i).getDay();
                 html += `<th class="border border-black px-1 md:px-2 py-1 text-[10px] md:text-xs tracking-tighter">${tblDayNames[dayOfWeek]}</th>`;
             }
-            html += `</tr>`;
-
-            // Header Row 2 (TANGGAL)
-            html += `<tr>`;
+            html += `</tr><tr>`;
             for (let i = 1; i <= daysInMonth; i++) {
                 html += `<th class="border border-black px-1 py-1 text-center">${i}</th>`;
             }
             html += `</tr></thead><tbody>`;
 
-            // Isi Data
             fullNames.forEach((person, index) => {
                 html += `<tr class="hover:bg-slate-200 transition-colors">`;
                 html += `<td class="border border-black text-center font-bold px-2 py-1.5">${index + 1}</td>`;
@@ -453,7 +468,7 @@
             updateScheduleDetail(selectedDateObj);
         });
 
-        // Inisialisasi awal
+        // Inisialisasi
         renderCalendar(currentMonth, currentYear);
         updateScheduleDetail(selectedDateObj);
     </script>
