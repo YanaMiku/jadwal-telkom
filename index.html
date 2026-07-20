@@ -157,15 +157,18 @@
         ];
 
         // --- DATA SIKLUS LAPANGAN GRUP 2 (Diperbarui) ---
-        // RISKA dan ELISAH digabung (Senin & Selasa). Sisa anggota mengisi slot berurutan.
+        // RISKA & ELISAH libur bersama (Senin & Selasa)
+        // ALYA & JELITA libur bersama (Rabu & Kamis)
+        // AZZAM & FIAN libur setiap Sabtu & Minggu
+        // IMEL libur Selasa & Rabu
         const group2Fixed = {
-            RISKA: [1,2],  // Libur Senin & Selasa
-            ELISAH: [1,2], // Libur Senin & Selasa (Bareng Riska)
-            IMEL: [2,3],   // Libur Selasa & Rabu
-            JELITA: [3,4], // Libur Rabu & Kamis
-            AZZAM: [4,5],  // Libur Kamis & Jumat
-            ALYA: [5,6],   // Libur Jumat & Sabtu
-            FIAN: [6,0]    // Libur Sabtu & Minggu
+            RISKA: [1,2],   // Senin & Selasa
+            ELISAH: [1,2],  // Senin & Selasa (Bareng Riska)
+            ALYA: [3,4],    // Rabu & Kamis
+            JELITA: [3,4],  // Rabu & Kamis (Bareng Alya)
+            IMEL: [2,3],    // Selasa & Rabu
+            AZZAM: [6,0],   // Sabtu & Minggu
+            FIAN: [6,0]     // Sabtu & Minggu
         };
 
         const schedule7Weeks = Array(7).fill(group2Fixed);
@@ -177,9 +180,9 @@
             { id: "Ali", full: "MUHAMMAD ALI YUSRON", group: 1 },
             { id: "Gilang", full: "FAWWAZ GILANG PRADANA", group: 1 },
             { id: "RISKA", full: "RISKA ANGRAENI PUTRI", group: 2 },
-            { id: "JELITA", full: "JELITA PERMATA", group: 2 },
-            { id: "ALYA", full: "ALYA RAHMAWATI", group: 2 },
             { id: "ELISAH", full: "ELISAH", group: 2 },
+            { id: "ALYA", full: "ALYA RAHMAWATI", group: 2 },
+            { id: "JELITA", full: "JELITA PERMATA", group: 2 },
             { id: "IMEL", full: "IMEL FITRI CAHYANI", group: 2 },
             { id: "AZZAM", full: "MUHAMAD AZZAM APRILADI", group: 2 },
             { id: "FIAN", full: "MUHAMAD ALIFIAN RAMADHAN", group: 2 }
@@ -224,10 +227,18 @@
             document.getElementById('w_lapangan').className = isWeekend ? "font-medium mt-0.5 text-red-400" : "font-medium mt-0.5 text-white";
 
             const liburList = [], hadirList = [];
-            for (const [name, daysOff] of Object.entries(schedule7Weeks[cycles.index7])) {
-                if (daysOff.includes(dayOfWeek)) liburList.push(name);
-                else hadirList.push(name);
+            const g2Data = schedule7Weeks[cycles.index7];
+            
+            // Urutan nama untuk tampilan yang rapi (sesuai urutan di fullNames)
+            const group2Order = ["RISKA", "ELISAH", "ALYA", "JELITA", "IMEL", "AZZAM", "FIAN"];
+            for (const name of group2Order) {
+                if (g2Data[name] && g2Data[name].includes(dayOfWeek)) {
+                    liburList.push(name);
+                } else {
+                    hadirList.push(name);
+                }
             }
+            
             document.getElementById('l_hadir').innerHTML = hadirList.join(', ');
             document.getElementById('l_libur').innerHTML = liburList.join(', ') || '-';
         }
