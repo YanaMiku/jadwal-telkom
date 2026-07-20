@@ -157,19 +157,17 @@
         ];
 
         // --- DATA SIKLUS LAPANGAN GRUP 2 (Diperbarui) ---
-        // Karena syaratnya MUTLAK "Pas 5 hari kerja, lalu 2 libur beruntun", jadwal harus dibikin Fixed (Tetap).
-        // Setiap orang di bawah ini mendapat jatah libur pas 2 hari berurutan.
+        // RISKA dan ELISAH digabung (Senin & Selasa). Sisa anggota mengisi slot berurutan.
         const group2Fixed = {
             RISKA: [1,2],  // Libur Senin & Selasa
+            ELISAH: [1,2], // Libur Senin & Selasa (Bareng Riska)
             IMEL: [2,3],   // Libur Selasa & Rabu
             JELITA: [3,4], // Libur Rabu & Kamis
             AZZAM: [4,5],  // Libur Kamis & Jumat
             ALYA: [5,6],   // Libur Jumat & Sabtu
-            FIAN: [6,0],   // Libur Sabtu & Minggu
-            ELISAH: [0,1]  // Libur Minggu & Senin
+            FIAN: [6,0]    // Libur Sabtu & Minggu
         };
 
-        // Memasukkan jadwal fixed ke dalam array agar tidak merusak logika sistem kode sebelumnya
         const schedule7Weeks = Array(7).fill(group2Fixed);
 
         const fullNames = [
