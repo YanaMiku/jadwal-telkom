@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Warehouse & Lapangan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent; 
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .table-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+        .table-scroll::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.5); 
+            border-radius: 4px;
+        }
+        .table-scroll::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
+        .table-scroll::-webkit-scrollbar-thumb:hover {
+            background: #64748b; 
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-2 md:p-6 selection:bg-blue-500/30">
+
+    <div class="max-w-6xl mx-auto space-y-4 md:space-y-6">
+        <div class="text-center space-y-1 md:space-y-2">
+            <h1 class="text-2xl md:text-3xl font-bold text-white tracking-tight">Jadwal Shift Terpadu</h1>
+            <p class="text-xs md:text-sm text-slate-400 flex items-center justify-center gap-2">
+                <i class="ph ph-clock-counter-clockwise"></i>
+                Warehouse (5 Minggu) & Lapangan (Jadwal Tetap / 5 Hari Kerja)
+            </p>
+        </div>
+
+        <!-- Sesuai aturan: Tetap mempertahankan 2 Kolom di Desktop maupun Mobile -->
+        <div class="grid grid-cols-2 gap-3 md:gap-6">
+            
+            <!-- 1. Kalender Section -->
+            <div class="glass-panel rounded-xl md:rounded-2xl p-3 md:p-6 shadow-xl flex flex-col">
+                <div class="flex justify-between items-center mb-4 md:mb-6">
+                    <button id="prevMonth" class="p-1 md:p-2 hover:bg-slate-700 rounded-lg transition text-slate-300">
+                        <i class="ph ph-caret-left text-xl md:text-2xl"></i>
+                    </button>
+                    
+                    <div class="text-center">
+                        <h2 id="monthYear" class="text-sm md:text-xl font-semibold text-blue-400 mb-1 leading-tight"></h2>
+                        <button id="btnToday" class="inline-flex items-center justify-center gap-1 px-2 py-0.5 md:px-3 md:py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-[10px] md:text-xs text-slate-300 hover:text-white border border-slate-700 transition">
+                            <i class="ph ph-calendar-check text-sm text-blue-400"></i> Hari ini
+                        </button>
+                    </div>
+                    
+                    <button id="nextMonth" class="p-1 md:p-2 hover:bg-slate-700 rounded-lg transition text-slate-300">
+                        <i class="ph ph-caret-right text-xl md:text-2xl"></i>
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-7 gap-1 text-center font-medium text-slate-400 mb-1 md:mb-2 text-[10px] md:text-sm">
+                    <div class="text-red-400">Min</div><div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div class="text-blue-300">Sab</div>
+                </div>
+                <div id="calendarGrid" class="grid grid-cols-7 gap-1 md:gap-2 text-center flex-grow text-[10px] md:text-sm">
+                    <!-- Tanggal dirender via JS -->
+                </div>
+            </div>
+
+            <!-- 2. Detail Jadwal Section -->
+            <div class="glass-panel rounded-xl md:rounded-2xl p-3 md:p-6 shadow-xl border-t-4 border-t-blue-500 flex flex-col overflow-hidden">
+                <h2 class="text-sm md:text-xl font-bold mb-1 text-white flex items-center gap-1 md:gap-2">
+                    <i class="ph ph-calendar-dots text-blue-400"></i> Detail
+                </h2>
+                <p id="selectedDateDisplay" class="text-blue-400 font-medium mb-1 text-[10px] md:text-base truncate"></p>
+                <p id="cycleDisplay" class="text-[9px] md:text-sm text-slate-400 mb-3 md:mb-4 font-mono bg-slate-800 inline-block px-2 py-1 rounded-md self-start"></p>
+
+                <div class="space-y-3 md:space-y-4 flex-grow overflow-y-auto pr-1">
+                    <!-- Tim 1 -->
+                    <div class="bg-slate-800/50 p-2 md:p-4 rounded-lg md:rounded-xl border border-slate-700">
+                        <h3 class="font-semibold text-emerald-400 mb-2 border-b border-slate-700 pb-1 md:pb-2 flex items-center gap-1 md:gap-2 text-xs md:text-base">
+                            <i class="ph ph-warehouse"></i> Grup 1
+                        </h3>
+                        <div class="grid grid-cols-1 gap-2 text-[10px] md:text-sm">
+                            <div>
+                                <span class="block text-slate-400 text-[9px] md:text-xs uppercase tracking-wider flex items-center gap-1">
+                                    <i class="ph ph-package"></i> Warehouse
+                                </span>
+                                <div id="w_warehouse" class="font-medium text-white mt-0.5"></div>
+                            </div>
+                            <div>
+                                <span class="block text-slate-400 text-[9px] md:text-xs uppercase tracking-wider flex items-center gap-1">
+                                    <i class="ph ph-map-pin"></i> Lapangan
+                                </span>
+                                <div id="w_lapangan" class="font-medium mt-0.5"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tim 2 -->
+                    <div class="bg-slate-800/50 p-2 md:p-4 rounded-lg md:rounded-xl border border-slate-700">
+                        <h3 class="font-semibold text-purple-400 mb-2 border-b border-slate-700 pb-1 md:pb-2 flex items-center gap-1 md:gap-2 text-xs md:text-base">
+                            <i class="ph ph-users-three"></i> Grup 2
+                        </h3>
+                        <div class="grid grid-cols-1 gap-2 text-[10px] md:text-sm">
+                            <div>
+                                <span class="block text-slate-400 text-[9px] md:text-xs uppercase tracking-wider flex items-center gap-1">
+                                    <i class="ph ph-briefcase"></i> Hadir
+                                </span>
+                                <div id="l_hadir" class="font-medium text-white mt-0.5 truncate"></div>
+                            </div>
+                            <div>
+                                <span class="block text-slate-400 text-[9px] md:text-xs uppercase tracking-wider flex items-center gap-1 text-red-400/80">
+                                    <i class="ph ph-bed"></i> Libur
+                                </span>
+                                <div id="l_libur" class="font-medium text-red-400 mt-0.5 truncate"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Tabel Rekapitulasi Section -->
+            <div class="col-span-2 glass-panel rounded-xl md:rounded-2xl shadow-xl overflow-hidden flex flex-col">
+                <div class="p-3 md:p-4 border-b border-slate-700/50 bg-slate-800/30 flex items-center gap-2">
+                    <i class="ph ph-table text-lg md:text-xl text-yellow-400"></i>
+                    <h2 class="text-sm md:text-lg font-bold text-white">Tabel Rekapitulasi - <span id="tableMonthYear" class="text-yellow-400"></span></h2>
+                </div>
+                
+                <div class="p-0 overflow-x-auto table-scroll">
+                    <div id="tableContainer" class="p-3 md:p-4 pb-6 min-w-max">
+                        <!-- Tabel digenerate dinamis -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- DATA SIKLUS 5 MINGGU (Grup 1) ---
+        const schedule5Weeks = [
+            { weekday: { w: "Gilang & Zhafran", l: "Ilham, Wisnu & Ali" }, weekend: { w: "Gilang & Ilham", l: "Wisnu, Ali & Zhafran" } },
+            { weekday: { w: "Gilang & Ilham", l: "Wisnu, Ali & Zhafran" }, weekend: { w: "Ilham & Wisnu", l: "Gilang, Ali & Zhafran" } },
+            { weekday: { w: "Ilham & Wisnu", l: "Gilang, Ali & Zhafran" }, weekend: { w: "Wisnu & Ali", l: "Gilang, Ilham & Zhafran" } },
+            { weekday: { w: "Wisnu & Ali", l: "Gilang, Ilham & Zhafran" }, weekend: { w: "Ali & Zhafran", l: "Gilang, Ilham & Wisnu" } },
+            { weekday: { w: "Ali & Zhafran", l: "Gilang, Ilham & Wisnu" }, weekend: { w: "Zhafran & Gilang", l: "Ilham, Wisnu & Ali" } }
+        ];
+
+        // --- DATA SIKLUS LAPANGAN GRUP 2 (Diperbarui) ---
+        // Karena syaratnya MUTLAK "Pas 5 hari kerja, lalu 2 libur beruntun", jadwal harus dibikin Fixed (Tetap).
+        // Setiap orang di bawah ini mendapat jatah libur pas 2 hari berurutan.
+        const group2Fixed = {
+            RISKA: [1,2],  // Libur Senin & Selasa
+            IMEL: [2,3],   // Libur Selasa & Rabu
+            JELITA: [3,4], // Libur Rabu & Kamis
+            AZZAM: [4,5],  // Libur Kamis & Jumat
+            ALYA: [5,6],   // Libur Jumat & Sabtu
+            FIAN: [6,0],   // Libur Sabtu & Minggu
+            ELISAH: [0,1]  // Libur Minggu & Senin
+        };
+
+        // Memasukkan jadwal fixed ke dalam array agar tidak merusak logika sistem kode sebelumnya
+        const schedule7Weeks = Array(7).fill(group2Fixed);
+
+        const fullNames = [
+            { id: "Ilham", full: "MUKHAMMAD ILHAM MAULANA", group: 1 },
+            { id: "Zhafran", full: "ZHAFRAN RAMADHAN", group: 1 },
+            { id: "Wisnu", full: "MUHAMMAD WISNU", group: 1 },
+            { id: "Ali", full: "MUHAMMAD ALI YUSRON", group: 1 },
+            { id: "Gilang", full: "FAWWAZ GILANG PRADANA", group: 1 },
+            { id: "RISKA", full: "RISKA ANGRAENI PUTRI", group: 2 },
+            { id: "JELITA", full: "JELITA PERMATA", group: 2 },
+            { id: "ALYA", full: "ALYA RAHMAWATI", group: 2 },
+            { id: "ELISAH", full: "ELISAH", group: 2 },
+            { id: "IMEL", full: "IMEL FITRI CAHYANI", group: 2 },
+            { id: "AZZAM", full: "MUHAMAD AZZAM APRILADI", group: 2 },
+            { id: "FIAN", full: "MUHAMAD ALIFIAN RAMADHAN", group: 2 }
+        ];
+
+        const anchorDate = new Date(2026, 6, 13); 
+        let currentDate = new Date(); 
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+        let selectedDateObj = currentDate;
+
+        const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        const dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        const tblDayNames = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
+
+        function getMonday(d) {
+            const date = new Date(d);
+            const day = date.getDay();
+            const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+            return new Date(date.getFullYear(), date.getMonth(), diff);
+        }
+
+        function calculateCycles(targetDate) {
+            const targetMonday = getMonday(targetDate);
+            const anchorMonday = getMonday(anchorDate);
+            const diffTime = targetMonday.getTime() - anchorMonday.getTime();
+            const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
+            return { index5: ((diffWeeks % 5) + 5) % 5, index7: ((diffWeeks % 7) + 7) % 7 };
+        }
+
+        function updateScheduleDetail(date) {
+            const cycles = calculateCycles(date);
+            const dayOfWeek = date.getDay();
+            const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+            
+            document.getElementById('selectedDateDisplay').textContent = `${dayNames[dayOfWeek]}, ${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+            document.getElementById('cycleDisplay').innerHTML = `G1: <span class="text-emerald-400 font-bold">W${cycles.index5 + 1}</span> | G2: <span class="text-purple-400 font-bold">Tetap (Fixed)</span>`;
+
+            const dataG1 = isWeekend ? schedule5Weeks[cycles.index5].weekend : schedule5Weeks[cycles.index5].weekday;
+            document.getElementById('w_warehouse').textContent = dataG1.w;
+            document.getElementById('w_lapangan').textContent = dataG1.l;
+            document.getElementById('w_lapangan').className = isWeekend ? "font-medium mt-0.5 text-red-400" : "font-medium mt-0.5 text-white";
+
+            const liburList = [], hadirList = [];
+            for (const [name, daysOff] of Object.entries(schedule7Weeks[cycles.index7])) {
+                if (daysOff.includes(dayOfWeek)) liburList.push(name);
+                else hadirList.push(name);
+            }
+            document.getElementById('l_hadir').innerHTML = hadirList.join(', ');
+            document.getElementById('l_libur').innerHTML = liburList.join(', ') || '-';
+        }
+
+        function renderTable(month, year) {
+            document.getElementById('tableMonthYear').textContent = `${monthNames[month]} ${year}`;
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const tableContainer = document.getElementById('tableContainer');
+
+            let html = `<table class="min-w-max border-collapse border-2 border-black text-xs md:text-sm text-black bg-white shadow-md">`;
+            
+            // Header Row 1 (HARI)
+            html += `<thead class="bg-yellow-400 font-bold uppercase"><tr>`;
+            html += `<th rowspan="2" class="border border-black px-2 md:px-3 py-1">NO</th>`;
+            html += `<th rowspan="2" class="border border-black px-3 md:px-6 py-1">NAMA</th>`;
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayOfWeek = new Date(year, month, i).getDay();
+                html += `<th class="border border-black px-1 md:px-2 py-1 text-[10px] md:text-xs tracking-tighter">${tblDayNames[dayOfWeek]}</th>`;
+            }
+            html += `</tr>`;
+
+            // Header Row 2 (TANGGAL)
+            html += `<tr>`;
+            for (let i = 1; i <= daysInMonth; i++) {
+                html += `<th class="border border-black px-1 py-1 text-center">${i}</th>`;
+            }
+            html += `</tr></thead><tbody>`;
+
+            // Isi Data
+            fullNames.forEach((person, index) => {
+                html += `<tr class="hover:bg-slate-200 transition-colors">`;
+                html += `<td class="border border-black text-center font-bold px-2 py-1.5">${index + 1}</td>`;
+                html += `<td class="border border-black px-3 py-1.5 whitespace-nowrap text-xs">${person.full}</td>`;
+
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const checkDate = new Date(year, month, d);
+                    const dayOfWeek = checkDate.getDay();
+                    const cycles = calculateCycles(checkDate);
+                    let status = 'M';
+
+                    if (person.group === 1) {
+                        const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+                        if (isWeekend) {
+                            const liburString = schedule5Weeks[cycles.index5].weekend.l;
+                            if (liburString.includes(person.id)) status = 'L';
+                        }
+                    } else if (person.group === 2) {
+                        const liburDays = schedule7Weeks[cycles.index7][person.id];
+                        if (liburDays.includes(dayOfWeek)) status = 'L';
+                    }
+
+                    if (status === 'M') {
+                        html += `<td class="border border-black bg-[#86efac] text-black text-center font-bold px-1 py-1">M</td>`;
+                    } else {
+                        html += `<td class="border border-black bg-[#ef4444] text-white text-center font-bold px-1 py-1">L</td>`;
+                    }
+                }
+                html += `</tr>`;
+            });
+
+            html += `</tbody></table>`;
+            tableContainer.innerHTML = html;
+        }
+
+        function renderCalendar(month, year) {
+            document.getElementById('monthYear').textContent = `${monthNames[month]} ${year}`;
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = "";
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const realToday = new Date(); 
+
+            for (let i = 0; i < firstDay; i++) {
+                grid.appendChild(document.createElement('div'));
+            }
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                
+                const checkDate = new Date(year, month, i);
+                const isSelected = (checkDate.getDate() === selectedDateObj.getDate() && checkDate.getMonth() === selectedDateObj.getMonth() && checkDate.getFullYear() === selectedDateObj.getFullYear());
+                const isToday = (checkDate.getDate() === realToday.getDate() && checkDate.getMonth() === realToday.getMonth() && checkDate.getFullYear() === realToday.getFullYear());
+
+                let btnClass = "w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-md md:rounded-lg mx-auto transition cursor-pointer relative ";
+                
+                if (isSelected) {
+                    btnClass += "bg-blue-600 text-white shadow-lg shadow-blue-500/50 ";
+                } else if (checkDate.getDay() === 0) {
+                    btnClass += "text-red-400 hover:bg-slate-700 "; 
+                } else {
+                    btnClass += "text-slate-200 hover:bg-slate-700 ";
+                }
+
+                if (isToday && !isSelected) {
+                    btnClass += "ring-1 md:ring-2 ring-blue-500/50 ring-inset font-bold text-blue-400 ";
+                }
+
+                btn.className = btnClass;
+                btn.onclick = () => {
+                    selectedDateObj = new Date(year, month, i);
+                    renderCalendar(month, year);
+                    updateScheduleDetail(selectedDateObj);
+                };
+                
+                grid.appendChild(btn);
+            }
+            
+            renderTable(month, year);
+        }
+
+        // --- EVENT LISTENERS ---
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            currentMonth--;
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar(currentMonth, currentYear);
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentMonth++;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            renderCalendar(currentMonth, currentYear);
+        });
+
+        document.getElementById('btnToday').addEventListener('click', () => {
+            const today = new Date();
+            currentMonth = today.getMonth();
+            currentYear = today.getFullYear();
+            selectedDateObj = today;
+            renderCalendar(currentMonth, currentYear);
+            updateScheduleDetail(selectedDateObj);
+        });
+
+        // Inisialisasi awal saat web dibuka
+        renderCalendar(currentMonth, currentYear);
+        updateScheduleDetail(selectedDateObj);
+    </script>
+</body>
+</html>
